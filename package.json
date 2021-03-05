@@ -1,0 +1,29 @@
+{
+  "name": "hipet_back",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/petJipsa/hipet_back.git",
+  "author": "황현빈 <caorink@dsm.hs.kr>",
+  "license": "MIT",
+  "scripts": {
+    "start": "babel-node src/index.js",
+    "start:dev": "nodemon --exec babel-node src/ src/index.js --delay 2"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.13.0",
+    "@babel/core": "^7.13.8",
+    "@babel/node": "^7.13.0",
+    "@babel/preset-env": "^7.13.9",
+    "@koa/cors": "^3.1.0",
+    "@koa/router": "^10.0.0",
+    "babel-eslint": "^10.1.0",
+    "dotenv": "^8.2.0",
+    "koa": "^2.13.1",
+    "koa-body": "^4.2.0",
+    "koa-logger": "^3.2.1",
+    "koa-router": "^10.0.0",
+    "mariadb": "^2.5.3",
+    "nodemon": "^2.0.7",
+    "sequelize": "^6.5.0"
+  }
+}
