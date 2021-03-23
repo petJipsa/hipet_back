@@ -7,6 +7,11 @@ import koaBody from 'koa-body';
 import helmet from 'koa-helmet';
 import http from 'http';
 
+import {createConnection} from "typeorm";
+
+createConnection().then(async connection => {
+}).catch(error => console.log(error));
+
 import api from './api';
 
 const app = new Koa();
@@ -20,6 +25,7 @@ app.use(helmet())
 .use(router.allowedMethods());
 
 router.use('/api', api.routes());
+
 
 let serverCallback = app.callback();
 let httpServer = http.createServer(serverCallback);

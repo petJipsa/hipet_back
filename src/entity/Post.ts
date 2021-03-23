@@ -1,22 +1,22 @@
 import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 
 @Entity()
-export class Email_check {
+export class Post {
 
   @PrimaryGeneratedColumn()
   num: number;
 
   @Column()
-  id: string;
+  userNum: number;
+
+  @Column({ default: 0 })
+  like: number;
 
   @Column()
-  email: string;
+  property: number;
 
   @Column()
-  code: number;
-
-  @Column()
-  email_check: boolean;
+  media: number;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   date: string;

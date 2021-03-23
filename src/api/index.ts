@@ -8,7 +8,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-import {signUp, loadProfile, changeProfile, userSecession, duplicateCheck, verification, login, logout, requestAccessToken, findPassword, loadImage} from './auth/auth.controller';
+/*import {signUp, loadProfile, changeProfile, userSecession, duplicateCheck, verification, login, logout, requestAccessToken, findPassword, loadImage} from './auth/auth.controller';
 
 api.post('media/single', upload.single('profileImage'), changeProfile);
 api.post('media/multiple', upload.array('profileImage', 5), changeProfile);
@@ -23,5 +23,5 @@ api.put('/comment', updateComment);
 api.delete('/comment', deleteComment);
 
 //내 피드 보기 => 프로필 정보 일부, 올린 글 영상정보 및 post uuid
-
+*/
 export default api

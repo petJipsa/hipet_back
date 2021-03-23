@@ -1,20 +1,17 @@
 import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 
 @Entity()
-export class Log {
+export class Follow {
 
   @PrimaryGeneratedColumn()
   num: number;
 
   @Column()
-  name: string;
+  userNum: number;
 
   @Column()
-  id: string;
+  follow: number;
 
-  @Column()
-  contents: string;
-
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
   date: string;
 }

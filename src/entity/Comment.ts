@@ -1,31 +1,31 @@
 import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 
 @Entity()
-export class Quiz {
+export class Comment {
 
   @PrimaryGeneratedColumn()
   num: number;
 
   @Column()
-  category: string;
+  postNum: number;
 
   @Column()
-  makeid: string;
+  groupNum: number;
 
   @Column()
-  name: string;
+  userNum: number;
 
   @Column()
   content: string;
 
   @Column()
-  file: string;
+  class: number;
 
   @Column()
-  point: number;
+  order: number;
 
-  @Column()
-  flag: string;
+  @Column({ type: 'boolean', default: false})
+  isDel: boolean;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
   date: string;

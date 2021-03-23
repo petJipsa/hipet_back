@@ -1,19 +1,13 @@
 import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 
 @Entity()
-export class Admin {
+export class Survey {
 
   @PrimaryGeneratedColumn()
-  num: number;
+  userNum: number;
 
   @Column()
-  name: string;
-
-  @Column()
-  id: string;
-
-  @Column()
-  password: string;
+  answer: string;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   date: string;

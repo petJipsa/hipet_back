@@ -1,17 +1,14 @@
 import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 
 @Entity()
-export class Solved {
+export class Media {
 
   @PrimaryGeneratedColumn()
   num: number;
 
   @Column()
-  quiz_id: number;
+  path: string;
 
   @Column()
-  id: string;
-
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
-  date: string;
+  postNum: number;
 }

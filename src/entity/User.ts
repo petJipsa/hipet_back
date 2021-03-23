@@ -7,23 +7,23 @@ export class User {
   num: number;
 
   @Column()
+  profile: number;
+
+  @Column()
   name: string;
 
   @Column()
-  id: string;
+  phone: string;
 
-  @Column()
-  password: string;
+  @Column({ default: 0 })
+  following: number;
 
-  @Column()
-  team: string;
+  @Column({ default: 0 })
+  follower: number;
 
-  @Column()
-  email: string;
+  @Column({ default: 0 })
+  like: number;
 
-  @Column()
-  score: number;
-
-  @Column()
-  rank: number;
+  @Column({ default: 'none' })
+  Oauth: string;
 }
