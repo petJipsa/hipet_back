@@ -3,17 +3,14 @@ import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 @Entity()
 export class User {
 
-  @PrimaryGeneratedColumn()
-  num: number;
+  @PrimaryGeneratedColumn('uuid')
+  uid: string;
 
   @Column()
   profile: number;
 
   @Column()
   name: string;
-
-  @Column()
-  phone: string;
 
   @Column({ default: 0 })
   following: number;
@@ -24,6 +21,6 @@ export class User {
   @Column({ default: 0 })
   like: number;
 
-  @Column({ default: 'none' })
-  Oauth: string;
+  @Column()
+  provider: string;
 }

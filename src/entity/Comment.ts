@@ -7,13 +7,13 @@ export class Comment {
   num: number;
 
   @Column()
-  postNum: number;
+  PostUUID: string;
 
   @Column()
   groupNum: number;
 
   @Column()
-  userNum: number;
+  userUid: string;
 
   @Column()
   content: string;

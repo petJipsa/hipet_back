@@ -7,10 +7,10 @@ export class Like {
   num: number;
 
   @Column()
-  userNum: number;
+  userUid: string;
 
   @Column()
-  postNum: number;
+  PostUUID: string;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
   date: string;

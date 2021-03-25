@@ -3,8 +3,8 @@ import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 @Entity()
 export class Survey {
 
-  @PrimaryGeneratedColumn()
-  userNum: number;
+  @PrimaryGeneratedColumn('uuid')
+  userUid: string;
 
   @Column()
   answer: string;

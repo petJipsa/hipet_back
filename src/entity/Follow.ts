@@ -7,7 +7,7 @@ export class Follow {
   num: number;
 
   @Column()
-  userNum: number;
+  userUid: string;
 
   @Column()
   follow: number;

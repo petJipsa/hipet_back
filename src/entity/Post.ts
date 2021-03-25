@@ -3,11 +3,11 @@ import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 @Entity()
 export class Post {
 
-  @PrimaryGeneratedColumn()
-  num: number;
+  @PrimaryGeneratedColumn('uuid')
+  UUID: string;
 
   @Column()
-  userNum: number;
+  userUid: string;
 
   @Column({ default: 0 })
   like: number;

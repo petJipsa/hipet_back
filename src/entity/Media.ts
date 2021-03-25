@@ -10,5 +10,5 @@ export class Media {
   path: string;
 
   @Column()
-  postNum: number;
+  userUid: string;
 }
