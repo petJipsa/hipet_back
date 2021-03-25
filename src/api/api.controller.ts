@@ -1,7 +1,63 @@
-import { errorCode } from '../../lib/errorcode';
+import { errorCode } from '../lib/errorcode';
+import { userinit } from '../lib/process';
+import { verify } from '../lib/firebase';
+import { getConnection } from "typeorm";
+import { User } from '../entity/User';
+import { Survey } from '../entity/Survey';
 import dotenv from 'dotenv';
 dotenv.config();
 
+export const signUp = (async (ctx) => { 
+  const firebaseToken = await verify(ctx.header.firebasetoken);
+  const { survey } = ctx.request.body;
+  let body : object, status : number;
+  
+  if (firebaseToken !== 'error') {
+    const user = await getConnection()
+    .createQueryBuilder()
+    .select("user")
+    .from(User, "user")
+    .where("user.uid = :uid", { uid: firebaseToken[0] })
+    .getOne();
+
+    if (user === undefined) {
+      let name = await userinit();
+      console.log(name);
+      
+
+      await getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into(User)
+      .values({ uid: firebaseToken[0], profile: 0, name: name, provider: firebaseToken[1] })// 아직 프로필 사진 뭐뭐있는지 않나옴
+      .execute();
+      await getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into(Survey)
+      .values({ userUid: firebaseToken[0], answer: survey })
+      .execute();
+
+      status = 201;
+      body = {};
+    }else{
+      status = 403;
+      body = await errorCode(303);
+    }
+  }else{
+    status = 403;
+    body = await errorCode(302);
+  }
+
+  ctx.status = status;
+  ctx.body = body;
+});
+
+
+
+
+
+/*
 
 export const loadProfile = (async (ctx) => { 
   const accesstoken = await jwtverify(ctx.request.header.accesstoken);
@@ -243,4 +299,4 @@ export const loadImage = (async (ctx) => {
     ctx.status = 403;
     ctx.body = await errorCode(501);
   }
-});
+});*/

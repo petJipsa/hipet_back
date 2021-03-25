@@ -8,8 +8,11 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-/*import {signUp, loadProfile, changeProfile, userSecession, duplicateCheck, verification, login, logout, requestAccessToken, findPassword, loadImage} from './auth/auth.controller';
+import {signUp} from './api.controller';
 
+api.post('/auth', signUp);
+
+/*
 api.post('media/single', upload.single('profileImage'), changeProfile);
 api.post('media/multiple', upload.array('profileImage', 5), changeProfile);
 api.get('meadia/:mediapath', loadImage);
