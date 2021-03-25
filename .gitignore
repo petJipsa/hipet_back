@@ -2,7 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=firebase
 
 ### Firebase ###
-.service-account-file.json
+service-account-file.json
 .idea
 **/node_modules/*
 **/.firebaserc
