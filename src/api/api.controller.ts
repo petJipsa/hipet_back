@@ -22,9 +22,7 @@ export const signUp = (async (ctx) => {
 
     if (user === undefined) {
       let name = await userinit();
-      console.log(name);
       
-
       await getConnection()
       .createQueryBuilder()
       .insert()
