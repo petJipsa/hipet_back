@@ -17,6 +17,7 @@
     "@types/koa-helmet": "^6.0.2",
     "@types/koa-router": "^7.4.1",
     "dotenv": "^8.2.0",
+    "firebase-admin": "^9.5.0",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
