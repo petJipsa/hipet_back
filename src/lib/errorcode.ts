@@ -1,4 +1,4 @@
-export const errorCode = (async (code) => {
+export const errorCode = (async (code, desc = false) => {
   let body;
 
   switch (code) {
@@ -50,6 +50,14 @@ export const errorCode = (async (code) => {
       };
       break;
 
+    case 303:
+      body = {
+        "errorMessage" : "invalid_grant",
+        "errorCode" : "E303",
+        "errorDescription" : "중복 데이터 존재"
+      };
+      break;
+
     case 401:
       body = {
         "errorMessage" : "invalid_form",
@@ -86,5 +94,6 @@ export const errorCode = (async (code) => {
       break;
   }
 
+  if (desc !== false) { body.errorDescription = desc; }
   return body;
 });
