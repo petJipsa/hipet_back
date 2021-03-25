@@ -8,9 +8,7 @@ import helmet from 'koa-helmet';
 import http from 'http';
 
 import {createConnection} from "typeorm";
-
-createConnection().then(async connection => {
-}).catch(error => console.log(error));
+createConnection().then(async connection => {}).catch(error => console.log(error));
 
 import api from './api';
 
