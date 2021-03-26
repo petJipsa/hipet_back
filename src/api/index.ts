@@ -24,7 +24,7 @@ import { signUp, uploadImage, loadImage } from './api.controller';
 
 api.post('/auth', signUp);
 api.post('/media', upload.single('media'), uploadImage);
-api.get('/media/:mediapath', loadImage);
+api.get('/media/:media', loadImage);
 
 
 /*

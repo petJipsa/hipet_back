@@ -95,11 +95,11 @@ export const uploadImage = (async (ctx) => {
 });
 
 export const loadImage = (async (ctx) => { 
-  const { mediapath } = ctx.params;
+  const { media } = ctx.params;
   
-  try { await send(ctx, mediapath, { root:  './files/' }); }
+  try { await send(ctx, media, { root: './files/' }); }
   catch(err){
-    ctx.status = 403;
+    ctx.status = 404;
     ctx.body = await errorCode(501);
   }
 });
