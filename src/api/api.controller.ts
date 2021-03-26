@@ -4,6 +4,8 @@ import { verify } from '../lib/firebase';
 import { getConnection } from "typeorm";
 import { User } from '../entity/User';
 import { Survey } from '../entity/Survey';
+import { Media } from '../entity/Media';
+import send from 'koa-send';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -51,11 +53,59 @@ export const signUp = (async (ctx) => {
   ctx.body = body;
 });
 
+export const uploadImage = (async (ctx) => { 
+  const firebaseToken = await verify(ctx.header.firebasetoken);
+  const fileName = ctx.request.file != undefined ? ctx.request.file.filename : undefined;
+  let body : object, status : number;
 
+  if (fileName !== undefined) {
+    if (firebaseToken !== 'error') {
+      const user = await getConnection()
+      .createQueryBuilder()
+      .select("user")
+      .from(User, "user")
+      .where("user.uid = :uid", { uid: firebaseToken[0] })
+      .getOne();
 
+      if (user !== undefined) {
+        await getConnection()
+        .createQueryBuilder()
+        .insert()
+        .into(Media)
+        .values({ userUid: firebaseToken[0], path: fileName })
+        .execute();
 
+        status = 201;
+        body = {};
+      }else{
+        status = 403;
+        body = await errorCode(303);
+      }
+    }else{
+      status = 403;
+      body = await errorCode(302);
+    }
+  }else{
+    status = 403;
+    body = await errorCode(401, '파일 또는 파일 확장자 오류');
+  }
+
+  ctx.status = status;
+  ctx.body = body;
+});
+
+export const loadImage = (async (ctx) => { 
+  const { mediapath } = ctx.params;
+  
+  try { await send(ctx, mediapath, { root:  './files/' }); }
+  catch(err){
+    ctx.status = 403;
+    ctx.body = await errorCode(501);
+  }
+});
 
 /*
+
 
 export const loadProfile = (async (ctx) => { 
   const accesstoken = await jwtverify(ctx.request.header.accesstoken);
@@ -288,13 +338,4 @@ export const deleteComment = (async (ctx) => {
   ctx.body = body;
 });
 
-export const loadImage = (async (ctx) => { 
-  const { imagepath } = ctx.params;
-  
-  try {
-   await send(ctx, imagepath, { root:  './files/' });
-  }catch(err){
-    ctx.status = 403;
-    ctx.body = await errorCode(501);
-  }
-});*/
+*/

@@ -6,14 +6,28 @@ const storage = multer.diskStorage({
   destination: async (req, file, cb) => { cb(null, './files') },
   filename: async (req, file, cb) => { cb(null,`${Date.now()}-${file.originalname}`) }
 });
-const upload = multer({ storage: storage });
 
-import {signUp} from './api.controller';
+const fileFilter = async (req, file, cb) => {
+  let typeArray = file.mimetype.split('/');
+  let fileType = typeArray[1];
+  if (fileType == 'jpg' || fileType == 'png' || fileType == 'jpeg' || fileType == 'gif' || fileType == 'mp4' || fileType == 'avi' || fileType == 'wmv') {
+    cb(null, true);
+  }else{
+    cb(null, false)
+  }
+}
+
+
+const upload = multer({ storage: storage, fileFilter: fileFilter });
+
+import { signUp, uploadImage, loadImage } from './api.controller';
 
 api.post('/auth', signUp);
+api.post('/media', upload.single('media'), uploadImage);
+api.get('/media/:mediapath', loadImage);
+
 
 /*
-api.post('media/single', upload.single('profileImage'), changeProfile);
 api.post('media/multiple', upload.array('profileImage', 5), changeProfile);
 api.get('meadia/:mediapath', loadImage);
 
