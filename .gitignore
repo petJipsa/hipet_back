@@ -6,12 +6,12 @@ files/
 
 
 ### Firebase ###
-service-account-file.json
 .idea
 **/node_modules/*
 **/.firebaserc
 
 ### Firebase Patch ###
+service-account-file.json
 .runtimeconfig.json
 .firebase/
 

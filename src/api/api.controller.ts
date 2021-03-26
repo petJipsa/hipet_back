@@ -5,6 +5,7 @@ import { getConnection } from "typeorm";
 import { User } from '../entity/User';
 import { Survey } from '../entity/Survey';
 import { Media } from '../entity/Media';
+import { Post } from '../entity/Post';
 import send from 'koa-send';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -102,6 +103,29 @@ export const loadImage = (async (ctx) => {
     ctx.status = 404;
     ctx.body = await errorCode(501);
   }
+});
+
+export const writePost = (async (ctx) => {
+  const firebaseToken = await verify(ctx.header.firebasetoken);
+  const { property, date } = ctx.request.body;
+  let body : object, status : number;
+
+  if(firebaseToken !== 'error'){
+    const post = await getConnection()
+    .createQueryBuilder()
+    .insert()
+    .into(Post)
+    .values({ userUid: firebaseToken[0], property: property, date: date })
+    .execute();
+
+    status = 201;
+    body = {};
+  } else {
+    status = 401
+    body = await errorCode(303);
+  }
+  ctx.status = status;
+  ctx.body = body;
 });
 
 /*
