@@ -1,4 +1,4 @@
-export const errorCode = (async (code, desc = false) => {
+export const errorCode = (async (code, desc = '') => {
   let body;
 
   switch (code) {
@@ -94,6 +94,6 @@ export const errorCode = (async (code, desc = false) => {
       break;
   }
 
-  if (desc !== false) { body.errorDescription = desc; }
+  if (desc !== '') { body.errorDescription = desc; }
   return body;
 });
