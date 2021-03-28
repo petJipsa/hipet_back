@@ -13,10 +13,10 @@ export class Post {
   like: number;
 
   @Column()
-  property: number;
+  description: string;
 
   @Column()
-  media: number;
+  mediaName: string;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   date: string;

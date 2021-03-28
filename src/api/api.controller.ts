@@ -108,7 +108,7 @@ export const loadImage = (async (ctx) => {
 //수정 필
 export const writePost = (async (ctx) => {
   const firebaseToken = await verify(ctx.header.firebasetoken);
-  const { property, date } = ctx.request.body;
+  const { description, mediaName } = ctx.request.body;
   let body : object, status : number;
 
   if(firebaseToken !== 'error'){
@@ -116,14 +116,14 @@ export const writePost = (async (ctx) => {
     .createQueryBuilder()
     .insert()
     .into(Post)
-    .values({ userUid: firebaseToken[0], property: property, date: date })
+    .values({ userUid: firebaseToken[0], description: description, mediaName: mediaName })
     .execute();
 
     status = 201;
     body = {};
   } else {
-    status = 401
-    body = await errorCode(303);
+    status = 401;
+    body = await errorCode(401);
   }
   ctx.status = status;
   ctx.body = body;
