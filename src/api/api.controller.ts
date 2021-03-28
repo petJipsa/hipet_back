@@ -46,7 +46,7 @@ export const signUp = (async (ctx) => {
       body = await errorCode(303);
     }
   }else{
-    status = 403;
+    status = 412;
     body = await errorCode(302);
   }
 
@@ -83,7 +83,7 @@ export const uploadImage = (async (ctx) => {
         body = await errorCode(303);
       }
     }else{
-      status = 403;
+      status = 412;
       body = await errorCode(302);
     }
   }else{
@@ -105,6 +105,7 @@ export const loadImage = (async (ctx) => {
   }
 });
 
+//수정 필
 export const writePost = (async (ctx) => {
   const firebaseToken = await verify(ctx.header.firebasetoken);
   const { property, date } = ctx.request.body;
@@ -127,6 +128,9 @@ export const writePost = (async (ctx) => {
   ctx.status = status;
   ctx.body = body;
 });
+
+
+
 
 /*
 
