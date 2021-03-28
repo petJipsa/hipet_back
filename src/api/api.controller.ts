@@ -105,6 +105,61 @@ export const loadImage = (async (ctx) => {
   }
 });
 
+export const loadMyProfile = (async (ctx) => { 
+  const firebaseToken = await verify(ctx.header.firebasetoken);
+  let body : object, status : number;
+  
+  if (firebaseToken !== 'error') {
+    const user = await getConnection()
+    .createQueryBuilder()
+    .select("user")
+    .from(User, "user")
+    .where("user.uid = :uid", { uid: firebaseToken[0] })
+    .getOne();
+
+    if (user !== undefined) {
+      status = 200;
+      body = {"name" : user.name, "uid" : user.uid, "profileImg" : user.profile};
+    }else{
+      status = 403;
+      body = await errorCode(108);
+    }
+  }else{
+    status = 412;
+    body = await errorCode(302);
+  }
+
+  ctx.status = status;
+  ctx.body = body;
+});
+
+export const loadProfile = (async (ctx) => { 
+  const { uid } = ctx.params;
+  let body : object, status : number;
+  
+  const user = await getConnection()
+  .createQueryBuilder()
+  .select("user")
+  .from(User, "user")
+  .where("user.uid = :uid", { uid: uid })
+  .getOne();
+
+  if (user !== undefined) {
+    status = 200;
+    body = {
+    "nickname" : "string",
+    "follower" : "integer",
+    "following" : "integer",
+    "profileImg" : "string"};
+  }else{
+    status = 403;
+    body = await errorCode(108);
+  }
+
+  ctx.status = status;
+  ctx.body = body;
+});
+
 //수정 필
 export const writePost = (async (ctx) => {
   const firebaseToken = await verify(ctx.header.firebasetoken);
