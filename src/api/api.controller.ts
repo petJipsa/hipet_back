@@ -147,10 +147,10 @@ export const loadProfile = (async (ctx) => {
   if (user !== undefined) {
     status = 200;
     body = {
-    "nickname" : "string",
-    "follower" : "integer",
-    "following" : "integer",
-    "profileImg" : "string"};
+    "name" : user.name,
+    "follower" : user.follower,
+    "following" : user.following,
+    "profileImg" : user.profile};
   }else{
     status = 403;
     body = await errorCode(108);

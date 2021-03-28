@@ -24,7 +24,7 @@ import { signUp, uploadImage, loadImage, writePost, loadMyProfile, loadProfile }
 
 api.post('/auth', signUp);
 api.get('/auth', loadMyProfile);
-api.get('/auth/:name', loadProfile);
+api.get('/auth/:uid', loadProfile);
 api.post('/media', upload.single('media'), uploadImage);
 api.get('/media/:media', loadImage);
 api.post('/post', writePost);
