@@ -14,8 +14,6 @@ dotenv.config();
 const translator = short(short.constants.flickrBase58, { consistentLength: false });
 
 export const signUp = (async (ctx) => { 
-  console.log("sadsd");
-  
   const firebaseToken = await verify(ctx.header.firebasetoken);
   const { survey } = ctx.request.body;
   let body : object, status : number;
