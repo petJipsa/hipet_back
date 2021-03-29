@@ -33,7 +33,7 @@ export const signUp = (async (ctx) => {
       .createQueryBuilder()
       .insert()
       .into(User)
-      .values({ uid: firebaseToken[0], profile: 0, name: name, provider: firebaseToken[1] })// 아직 프로필 사진 뭐뭐있는지 않나옴
+      .values({ uid: firebaseToken[0], profile: '0', name: name, provider: firebaseToken[1] })// 아직 프로필 사진 뭐뭐있는지 않나옴
       .execute();
       await getConnection()
       .createQueryBuilder()
@@ -114,9 +114,9 @@ export const loadProfile = (async (ctx) => {
 
 export const changeProfile = (async (ctx) => {
   const firebaseToken = await verify(ctx.header.firebasetoken);
-  const profileImage = ctx.request.body.profileImage != undefined ? ctx.request.body.profileImage : undefined;
+  const profileImage = ctx.request.body.profileImg != undefined ? ctx.request.body.profileImg : undefined;
   const name = ctx.request.body.name != undefined ? ctx.request.body.name : undefined;
-  let body : object, status : number;
+  let body : object, status : number, option : object;
 
   if (firebaseToken !== 'error') {
     const user = await getConnection()
@@ -127,13 +127,19 @@ export const changeProfile = (async (ctx) => {
     .getOne();
 
     if (user !== undefined) {
+      
+      if (name !== undefined && profileImage === undefined) {
+        option = { name: name };
+      }else if (name === undefined && profileImage !== undefined){
+        option = { profile: profileImage };
+      }else{
+        option = { name: name, profile: profileImage };
+      }
+
       await getConnection()
       .createQueryBuilder()
       .update(User)
-      .set({ 
-        name: () => `${name != undefined ? name : 'name'}`,
-        profile: () => `${profileImage != undefined ? profileImage : 'profile'}`
-      })
+      .set(option)
       .where("user.uid = :uid", { uid: firebaseToken[0] })
       .execute();
 
