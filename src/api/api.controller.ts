@@ -14,6 +14,8 @@ dotenv.config();
 const translator = short(short.constants.flickrBase58, { consistentLength: false });
 
 export const signUp = (async (ctx) => { 
+  console.log("sadsd");
+  
   const firebaseToken = await verify(ctx.header.firebasetoken);
   const { survey } = ctx.request.body;
   let body : object, status : number;
@@ -222,7 +224,6 @@ export const loadImage = (async (ctx) => {
   }
 });
 
-//수정 필
 export const writePost = (async (ctx) => {
   const firebaseToken = await verify(ctx.header.firebasetoken);
   const { description, mediaName } = ctx.request.body;
