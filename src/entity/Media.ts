@@ -3,12 +3,15 @@ import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 @Entity()
 export class Media {
 
-  @PrimaryGeneratedColumn()
-  num: number;
+  @PrimaryGeneratedColumn('uuid')
+  uid: string;
 
   @Column()
   path: string;
 
   @Column()
   userUid: string;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  date: string;
 }
