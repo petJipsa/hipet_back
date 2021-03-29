@@ -7,8 +7,11 @@ import { Survey } from '../entity/Survey';
 import { Media } from '../entity/Media';
 import { Post } from '../entity/Post';
 import send from 'koa-send';
+import short from 'short-uuid';
 import dotenv from 'dotenv';
 dotenv.config();
+
+const translator = short(short.constants.flickrBase58, { consistentLength: false });
 
 export const signUp = (async (ctx) => { 
   const firebaseToken = await verify(ctx.header.firebasetoken);
@@ -52,57 +55,6 @@ export const signUp = (async (ctx) => {
 
   ctx.status = status;
   ctx.body = body;
-});
-
-export const uploadImage = (async (ctx) => { 
-  const firebaseToken = await verify(ctx.header.firebasetoken);
-  const fileName = ctx.request.file != undefined ? ctx.request.file.filename : undefined;
-  let body : object, status : number;
-
-  if (fileName !== undefined) {
-    if (firebaseToken !== 'error') {
-      const user = await getConnection()
-      .createQueryBuilder()
-      .select("user")
-      .from(User, "user")
-      .where("user.uid = :uid", { uid: firebaseToken[0] })
-      .getOne();
-
-      if (user !== undefined) {
-        await getConnection()
-        .createQueryBuilder()
-        .insert()
-        .into(Media)
-        .values({ userUid: firebaseToken[0], path: fileName })
-        .execute();
-
-        status = 201;
-        body = {};
-      }else{
-        status = 403;
-        body = await errorCode(303);
-      }
-    }else{
-      status = 412;
-      body = await errorCode(302);
-    }
-  }else{
-    status = 403;
-    body = await errorCode(401, '파일 또는 파일 확장자 오류');
-  }
-
-  ctx.status = status;
-  ctx.body = body;
-});
-
-export const loadImage = (async (ctx) => { 
-  const { media } = ctx.params;
-  
-  try { await send(ctx, media, { root: './files/' }); }
-  catch(err){
-    ctx.status = 404;
-    ctx.body = await errorCode(501);
-  }
 });
 
 export const loadMyProfile = (async (ctx) => { 
@@ -160,6 +112,101 @@ export const loadProfile = (async (ctx) => {
   ctx.body = body;
 });
 
+export const changeProfile = (async (ctx) => {
+  const firebaseToken = await verify(ctx.header.firebasetoken);
+  const profileImage = ctx.request.body.profileImage != undefined ? ctx.request.body.profileImage : undefined;
+  const name = ctx.request.body.name != undefined ? ctx.request.body.name : undefined;
+  let body : object, status : number;
+
+  if (firebaseToken !== 'error') {
+    const user = await getConnection()
+    .createQueryBuilder()
+    .select("user")
+    .from(User, "user")
+    .where("user.uid = :uid", { uid: firebaseToken[0] })
+    .getOne();
+
+    if (user !== undefined) {
+      await getConnection()
+      .createQueryBuilder()
+      .update(User)
+      .set({ 
+        name: () => `${name != undefined ? name : 'name'}`,
+        profile: () => `${profileImage != undefined ? profileImage : 'profile'}`
+      })
+      .where("user.uid = :uid", { uid: firebaseToken[0] })
+      .execute();
+
+      status = 201;
+      body = {};
+    }else{
+      status = 403;
+      body = await errorCode(108);
+    }
+  }else{
+    status = 412;
+    body = await errorCode(302);
+  }
+
+  ctx.status = status;
+  ctx.body = body;
+});
+
+export const uploadImage = (async (ctx) => { 
+  const firebaseToken = await verify(ctx.header.firebasetoken);
+  const fileName = ctx.request.file != undefined ? ctx.request.file.filename : undefined;
+  let body : object, status : number;
+
+  if (fileName !== undefined) {
+    if (firebaseToken !== 'error') {
+      const user = await getConnection()
+      .createQueryBuilder()
+      .select("user")
+      .from(User, "user")
+      .where("user.uid = :uid", { uid: firebaseToken[0] })
+      .getOne();
+
+      if (user !== undefined) {
+        const uid = await translator.new();
+        await getConnection()
+        .createQueryBuilder()
+        .insert()
+        .into(Media)
+        .values({ 
+          uid : uid,
+          userUid: firebaseToken[0], 
+          path: fileName })
+        .execute();
+
+        status = 201;
+        body = {"uid" : uid};
+      }else{
+        status = 403;
+        body = await errorCode(303);
+      }
+    }else{
+      status = 412;
+      body = await errorCode(302);
+    }
+  }else{
+    status = 403;
+    body = await errorCode(401, '파일 또는 파일 확장자 오류');
+  }
+
+  ctx.status = status;
+  ctx.body = body;
+});
+
+export const loadImage = (async (ctx) => { 
+  const { media } = ctx.params;
+  
+  try { await send(ctx, media, { root: './files/' }); }
+  catch(err){
+    ctx.status = 404;
+    ctx.body = await errorCode(501);
+  }
+});
+
 //수정 필
 export const writePost = (async (ctx) => {
   const firebaseToken = await verify(ctx.header.firebasetoken);
@@ -189,88 +236,6 @@ export const writePost = (async (ctx) => {
 
 /*
 
-
-export const loadProfile = (async (ctx) => { 
-  const accesstoken = await jwtverify(ctx.request.header.accesstoken);
-  let body,status,rows;
-  
-  if(accesstoken[0]){
-    try{
-      rows = await User.find({id: accesstoken[1]}).limit(1).exec();
-
-      if (rows[0] != undefined) {
-        status = 200;
-        body = {
-          "nickname" : rows[0]['nickname'],
-          "id" : rows[0]['id'],
-          "address" : rows[0]['address'],
-          "profileImage" : rows[0]['profileImage'],
-          "introduce" : rows[0]['introduce']
-        };
-      }else{
-        status = 403;
-        body = await errorCode(108);
-      }
-    }catch(err){ 
-      status = 403;
-      body = await errorCode(401); 
-    }
-  }else{
-    status = 412;
-    body = await errorCode(302);
-  }
-
-  ctx.status = status;
-  ctx.body = body;
-});
-
-export const changeProfile = (async (ctx) => {
-  const accesstoken = await jwtverify(ctx.request.header.accesstoken);
-  const change = ctx.request.body.change.split(',');
-  const options = ['nickname', 'id', 'password', 'address', 'profileImage', 'introduce'];
-  let body, status, rows, mailStatus, ext, fileName;
-  let sql = {};
-
-  if (ctx.request.file != undefined){
-    ext = ctx.request.file.originalname.split('.')[1];
-    fileName = `${ctx.request.file.filename}`;
-  }
-
-  if(accesstoken[0]){
-    try{
-      rows = await User.find({id: accesstoken[1]}).limit(1).exec();
-      sql['_id'] = rows[0]['_id'];
-
-      if (ext !== 'png' && ext !== 'jpg' && ext !== 'gif' && ext !== 'jpeg') { throw new Error("extention invalid"); }
-      
-      for (let i=0; i < 6; i++) {
-        if (change[i] == 'true'){
-          if (options[i] == 'id') {
-            sql['cert'] = false;
-            sql[options[i]] = ctx.request.body[options[i]];
-            mailStatus = await updateUserId(ctx.request.body[options[i]]);
-            if (mailStatus == false) { throw new Error("email invalid"); }
-          }else if (options[i] == 'password'){ sql[options[i]] = await crypto.createHmac('sha512', process.env.secret).update(ctx.request.body[options[i]]).digest('hex');
-          }else if (options[i] == 'profileImage'){ sql[options[i]] = fileName;
-          }else{ sql[options[i]] = ctx.request.body[options[i]]; }
-        }else{ sql[options[i]] = rows[0][options[i]]; }
-      }
-      await User.updateOne(sql);
-      await log('L102',`유저 정보 변경-${accesstoken[1]}`);
-
-      status = 201;
-      body = {};
-    }catch(err){ 
-      status = 403;
-      body = await errorCode(401);
-    }
-  }else{
-    status = 412;
-    body = await errorCode(302);
-  }
-  ctx.status = status;
-  ctx.body = body;
-});
 
 export const comment = (async (ctx) => {
   const { content } = ctx.request.body;
