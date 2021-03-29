@@ -199,8 +199,17 @@ export const uploadImage = (async (ctx) => {
 
 export const loadImage = (async (ctx) => { 
   const { media } = ctx.params;
+  let body : object, status : number;
   
-  try { await send(ctx, media, { root: './files/' }); }
+  const path = await getConnection()
+  .createQueryBuilder()
+  .select("media")
+  .from(Media, "media")
+  .where("media.uid = :uid", { uid: media })
+  .orWhere("media.path = :path", { path: media })
+  .getOne();
+
+  try { await send(ctx, path.path, { root: './files/' }); }
   catch(err){
     ctx.status = 404;
     ctx.body = await errorCode(501);
