@@ -228,7 +228,7 @@ export const writePost = (async (ctx) => {
   let body : object, status : number;
 
   if(firebaseToken !== 'error'){
-    const post = await getConnection()
+    await getConnection()
     .createQueryBuilder()
     .insert()
     .into(Post)
