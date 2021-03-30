@@ -246,58 +246,42 @@ export const writePost = (async (ctx) => {
 });
 
 
+export const getPost = (async (ctx) => {
+  const firebaseToken = await verify(ctx.header.firebasetoken);
+  const userUid = ctx.header.user != undefined ? ctx.header.user : undefined;
+  let body : object, status : number, post : any;
 
+  if (firebaseToken !== 'error') {
+    const user = await getConnection()
+    .createQueryBuilder()
+    .select("user")
+    .from(User, "user")
+    .where("user.uid = :uid", { uid: firebaseToken[0] })
+    .getOne();
 
-/*
-
-
-export const comment = (async (ctx) => {
-  const { content } = ctx.request.body;
-  const { postid } = ctx.request.header;
-  const { commentid } = ctx.request.header;
-  const accesstoken = await jwtverify(ctx.request.header.accesstoken);
-  let body,status,postRows,commentRows, groupId, commentClass, commentOrder,check;
-
-
-  if(accesstoken[0]){
-    try{
-      postRows = await Post.findOne({_id: postid}).exec();
-      if (postRows != null) {
-        
-        if (commentid != undefined) { 
-          commentRows = await Comment.findOne({groupId: commentid}).sort({ date: -1 }).exec(); 
-          if (commentRows != null) {
-            groupId = commentRows['groupId'];
-            commentClass = commentRows['class'];
-            commentOrder = commentRows['order']+1;
-          }else{
-            commentRows = await Comment.findOne({_id: commentid}).exec(); 
-            groupId = commentid;
-            commentClass = commentRows['class']+1;
-            commentOrder = 1;
-          }
-          
-        }else{
-          commentRows = await Comment.findOne({postId: postid, class: 1}).sort({ date: -1 }).exec(); 
-          groupId = 'root';
-          commentClass = 1;
-          if (commentRows != null) { commentOrder = commentRows['order']+1; }
-          else{ commentOrder = 1; }
-        }
+    if (user !== undefined) {
+      if (userUid !== undefined) {
+        post = await getConnection()
+        .createQueryBuilder()
+        .select(["post.userUid", "post.like", "post.view", "post.description", "post.mediaName", "post.date"])
+        .from(Post, "post")
+        .where("post.userUid = :uid", { uid: userUid })
+        .getMany();
+      }else{
+        post = await getConnection()
+        .createQueryBuilder()
+        .select(["post.userUid", "post.like", "post.view", "post.description", "post.mediaName", "post.date"])
+        .from(Post, "post")
+        .orderBy("RAND()")
+        .getOne();
+      }
       
-        check = await addComment(postid, groupId, content, accesstoken[1], commentClass, commentOrder);
-        if (check == false) { throw new Error("형식 에러"); }
-
-        status = 201;
-        body = {};
-      }else{
-        status = 403;
-        body = await errorCode(108);
-      }
-    }catch(err){ 
+      status = 200;
+      body = post;
+    }else{
       status = 403;
-      body = await errorCode(401);
-     }
+      body = await errorCode(303);
+    }
   }else{
     status = 412;
     body = await errorCode(302);
@@ -306,98 +290,3 @@ export const comment = (async (ctx) => {
   ctx.status = status;
   ctx.body = body;
 });
-
-export const loadComment = (async (ctx) => {
-  const { postid } = ctx.request.header;
-  const accesstoken = await jwtverify(ctx.request.header.accesstoken);
-  let body,status,rows,commentRows;
-
-
-  if(accesstoken[0]){
-    try{
-      rows = await Post.findOne({_id: postid}).exec();
-      if (rows != null) {
-        commentRows = await Comment.find({postId: postid}).sort({ class: 1 }).exec();
-        status = 201;
-        body = {comments: commentRows};
-      }else{
-        status = 403;
-        body = await errorCode(108);
-      }
-    }catch(err){ 
-      status = 403;
-      body = await errorCode(401);
-     }
-  }else{
-    status = 412;
-    body = await errorCode(302);
-  }
-
-  ctx.status = status;
-  ctx.body = body;
-});
-
-export const updateComment = (async (ctx) => {
-  const { content } = ctx.request.body;
-  const { commentid } = ctx.request.header;
-  const accesstoken = await jwtverify(ctx.request.header.accesstoken);
-  let body,status,rows;
-
-
-  if(accesstoken[0]){
-    try{
-      rows = await Comment.findOne({_id: commentid}).exec();
-      if (rows != null && rows['userId'] == accesstoken[1]) { 
-        await Comment.updateOne({_id: commentid, content: content}).exec();
-        await log('L202',`댓글변경-${commentid}`);
-        status = 201;
-        body = {};
-      }else{
-        status = 403;
-        body = await errorCode(108);
-      }
-    }catch(err){ 
-      status = 403;
-      body = await errorCode(401);
-     }
-  }else{
-    status = 412;
-    body = await errorCode(302);
-  }
-
-  ctx.status = status;
-  ctx.body = body;
-});
-
-export const deleteComment = (async (ctx) => {
-  const { commentid } = ctx.request.header;
-  const accesstoken = await jwtverify(ctx.request.header.accesstoken);
-  let body,status,rows;
-
-
-  if(accesstoken[0]){
-    try{
-      rows = await Comment.findOne({_id: commentid}).exec();
-      if (rows != null && rows['userId'] == accesstoken[1]) { 
-        await Comment.deleteOne({_id: commentid}).exec();
-        await log('L203',`댓글 삭제-${commentid}`);
-        status = 201;
-        body = {};
-      }else{
-        status = 403;
-        body = await errorCode(108);
-      }
-    }catch(err){ 
-      status = 403;
-      body = await errorCode(401);
-     }
-  }else{
-    status = 412;
-    body = await errorCode(302);
-  }
-
-  ctx.status = status;
-  ctx.body = body;
-});
-
-*/

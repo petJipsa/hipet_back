@@ -17,10 +17,9 @@ const fileFilter = async (req, file, cb) => {
   }
 }
 
-
 const upload = multer({ storage: storage, fileFilter: fileFilter });
 
-import { signUp, uploadImage, loadImage, writePost, loadMyProfile, loadProfile, changeProfile } from './api.controller';
+import { signUp, uploadImage, loadImage, writePost, loadMyProfile, loadProfile, changeProfile, getPost } from './api.controller';
 
 api.post('/auth', signUp);
 api.get('/auth', loadMyProfile);
@@ -29,20 +28,6 @@ api.put('/auth', changeProfile);
 api.post('/media', upload.single('media'), uploadImage);
 api.get('/media/:media', loadImage);
 api.post('/post', writePost);
+api.get('/post', getPost);
 
-
-/*
-api.post('media/multiple', upload.array('profileImage', 5), changeProfile);
-api.get('meadia/:mediapath', loadImage);
-
-api.get('/auth', loadProfile);
-api.put('/auth', upload.single('profileImage'), changeProfile);
-
-api.post('/comment', comment);
-api.get('/comment', loadComment);
-api.put('/comment', updateComment);
-api.delete('/comment', deleteComment);
-
-//내 피드 보기 => 프로필 정보 일부, 올린 글 영상정보 및 post uuid
-*/
 export default api
