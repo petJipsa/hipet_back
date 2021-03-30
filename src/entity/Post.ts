@@ -12,6 +12,9 @@ export class Post {
   @Column({ default: 0 })
   like: number;
 
+  @Column({ default: 0 })
+  view: number;
+
   @Column()
   description: string;
 
