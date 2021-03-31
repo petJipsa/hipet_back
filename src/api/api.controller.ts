@@ -298,7 +298,7 @@ export const getPost = (async (ctx) => {
 });
 
 export const updateViews = (async (ctx) => {
-  const postId = ctx.header.postId;
+  const postId = ctx.header.postid;
   let body : object, status : number;
 
   await getConnection()
@@ -404,4 +404,4 @@ export const getLike = (async (ctx) => {
   ctx.status = status;
   ctx.body = body;
 });
-*/
+*/ 
