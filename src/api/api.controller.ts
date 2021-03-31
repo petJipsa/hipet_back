@@ -296,3 +296,112 @@ export const getPost = (async (ctx) => {
   ctx.status = status;
   ctx.body = body;
 });
+
+export const updateViews = (async (ctx) => {
+  const postId = ctx.header.postId;
+  let body : object, status : number;
+
+  await getConnection()
+  .createQueryBuilder()
+  .update(Post)
+  .set({ view : () => 'view + 1' })
+  .where("post.UUID = :postId", { postId : postId })
+  .execute();
+
+  status = 200;
+  body = {};
+
+  ctx.status = status;
+  ctx.body = body;
+});
+/*
+export const postLike = (async (ctx) => {
+  const firebaseToken = await verify(ctx.header.firebasetoken);
+  const userUid = ctx.header.user != undefined ? ctx.header.user : undefined;
+  let body : object, status : number, post : any;
+
+  if (firebaseToken !== 'error') {
+    const user = await getConnection()
+    .createQueryBuilder()
+    .select("user")
+    .from(User, "user")
+    .where("user.uid = :uid", { uid: firebaseToken[0] })
+    .getOne();
+
+    if (user !== undefined) {
+      if (userUid !== undefined) {
+        post = await getConnection()
+        .createQueryBuilder()
+        .select(["post.userUid", "post.like", "post.view", "post.description", "post.mediaName", "post.date"])
+        .from(Post, "post")
+        .where("post.userUid = :uid", { uid: userUid })
+        .getMany();
+      }else{
+        post = await getConnection()
+        .createQueryBuilder()
+        .select(["post.userUid", "post.like", "post.view", "post.description", "post.mediaName", "post.date"])
+        .from(Post, "post")
+        .orderBy("RAND()")
+        .getOne();
+      }
+      
+      status = 200;
+      body = post;
+    }else{
+      status = 403;
+      body = await errorCode(303);
+    }
+  }else{
+    status = 412;
+    body = await errorCode(302);
+  }
+
+  ctx.status = status;
+  ctx.body = body;
+});
+
+export const getLike = (async (ctx) => {
+  const firebaseToken = await verify(ctx.header.firebasetoken);
+  const userUid = ctx.header.user != undefined ? ctx.header.user : undefined;
+  let body : object, status : number, post : any;
+
+  if (firebaseToken !== 'error') {
+    const user = await getConnection()
+    .createQueryBuilder()
+    .select("user")
+    .from(User, "user")
+    .where("user.uid = :uid", { uid: firebaseToken[0] })
+    .getOne();
+
+    if (user !== undefined) {
+      if (userUid !== undefined) {
+        post = await getConnection()
+        .createQueryBuilder()
+        .select(["post.userUid", "post.like", "post.view", "post.description", "post.mediaName", "post.date"])
+        .from(Post, "post")
+        .where("post.userUid = :uid", { uid: userUid })
+        .getMany();
+      }else{
+        post = await getConnection()
+        .createQueryBuilder()
+        .select(["post.userUid", "post.like", "post.view", "post.description", "post.mediaName", "post.date"])
+        .from(Post, "post")
+        .orderBy("RAND()")
+        .getOne();
+      }
+      
+      status = 200;
+      body = post;
+    }else{
+      status = 403;
+      body = await errorCode(303);
+    }
+  }else{
+    status = 412;
+    body = await errorCode(302);
+  }
+
+  ctx.status = status;
+  ctx.body = body;
+});
+*/
