@@ -298,7 +298,11 @@ export const getPost = (async (ctx) => {
 });
 
 export const updateViews = (async (ctx) => {
+<<<<<<< HEAD
   const postId = ctx.header.postId;
+=======
+  const postId = ctx.header.postid;
+>>>>>>> master
   let body : object, status : number;
 
   await getConnection()
@@ -404,4 +408,8 @@ export const getLike = (async (ctx) => {
   ctx.status = status;
   ctx.body = body;
 });
+<<<<<<< HEAD
 */
+=======
+*/ 
+>>>>>>> master
