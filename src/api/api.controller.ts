@@ -329,26 +329,7 @@ export const updateViews = (async (ctx) => {
 
 export const postLike = (async (ctx) => {
   const firebaseToken = await verify(ctx.header.firebasetoken);
-<<<<<<< HEAD
   const { postId } = ctx.request.body;
-=======
-  const postId = ctx.header.postId;
-  let body : object, status : number, post : any;
-
-  if (firebaseToken !== 'error') {
-  }else{
-    status = 412;
-    body = await errorCode(302);
-  }
-
-  ctx.status = status;
-  ctx.body = body;
-});
-
-export const getLike = (async (ctx) => {
-  const firebaseToken = await verify(ctx.header.firebasetoken);
-  const { postId } = ctx.header;
->>>>>>> master
   let body : object, status : number;
 
   if (firebaseToken !== 'error') {
@@ -359,7 +340,6 @@ export const getLike = (async (ctx) => {
     .where("post.UUID = :UUID", { UUID: postId })
     .getOne()
 
-<<<<<<< HEAD
     if(post !== undefined){
       const like = await getConnection()
       .createQueryBuilder()
@@ -390,8 +370,34 @@ export const getLike = (async (ctx) => {
 
         status = 200;
         body = {};
-=======
-    if (user !== undefined) {
+      }
+    }else{
+      status = 403;
+      body = errorCode(601);
+    }
+  }else{
+    status = 412;
+    body = await errorCode(302);
+  }
+
+  ctx.status = status;
+  ctx.body = body;
+});
+
+export const getLike = (async (ctx) => {
+  const firebaseToken = await verify(ctx.header.firebasetoken);
+  const { postId } = ctx.header;
+  let body : object, status : number;
+
+  if (firebaseToken !== 'error') {
+    const post = await getConnection()
+    .createQueryBuilder()
+    .select("post")
+    .from(Post, "post")
+    .where("post.UUID = :UUID", { UUID: postId })
+    .getOne()
+
+    if (post !== undefined) {
       const like = await getConnection()
       .createQueryBuilder()
       .select(["post.num"])
@@ -406,7 +412,6 @@ export const getLike = (async (ctx) => {
         body = {answer: true}
       }else{
         body = {answer: false};
->>>>>>> master
       }
     }else{
       status = 403;
