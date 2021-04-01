@@ -252,7 +252,6 @@ export const writePost = (async (ctx) => {
   ctx.body = body;
 });
 
-
 export const getPost = (async (ctx) => {
   const firebaseToken = await verify(ctx.header.firebasetoken);
   const userUid = ctx.header.user != undefined ? ctx.header.user : undefined;
@@ -330,7 +329,26 @@ export const updateViews = (async (ctx) => {
 
 export const postLike = (async (ctx) => {
   const firebaseToken = await verify(ctx.header.firebasetoken);
+<<<<<<< HEAD
   const { postId } = ctx.request.body;
+=======
+  const postId = ctx.header.postId;
+  let body : object, status : number, post : any;
+
+  if (firebaseToken !== 'error') {
+  }else{
+    status = 412;
+    body = await errorCode(302);
+  }
+
+  ctx.status = status;
+  ctx.body = body;
+});
+
+export const getLike = (async (ctx) => {
+  const firebaseToken = await verify(ctx.header.firebasetoken);
+  const { postId } = ctx.header;
+>>>>>>> master
   let body : object, status : number;
 
   if (firebaseToken !== 'error') {
@@ -341,6 +359,7 @@ export const postLike = (async (ctx) => {
     .where("post.UUID = :UUID", { UUID: postId })
     .getOne()
 
+<<<<<<< HEAD
     if(post !== undefined){
       const like = await getConnection()
       .createQueryBuilder()
@@ -371,6 +390,23 @@ export const postLike = (async (ctx) => {
 
         status = 200;
         body = {};
+=======
+    if (user !== undefined) {
+      const like = await getConnection()
+      .createQueryBuilder()
+      .select(["post.num"])
+      .from(Like, "like")
+      .where("post.userUid = :uid", { uid: firebaseToken[0] })
+      .andWhere("post.PostUUID = :postId", { postId: postId })
+      .getMany();
+
+
+      status = 200;
+      if (like != undefined) {
+        body = {answer: true}
+      }else{
+        body = {answer: false};
+>>>>>>> master
       }
     }else{
       status = 403;
