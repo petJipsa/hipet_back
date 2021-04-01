@@ -1,4 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm";
+import { Post } from "./Post";
 
 @Entity()
 export class Like {
@@ -10,8 +11,10 @@ export class Like {
   userUid: string;
 
   @Column()
-  PostUUID: string;
+  PostUid: string;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
   date: string;
+
+  @ManyToOne(()=> Post, post => post.like) post: Post[];
 }

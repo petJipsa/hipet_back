@@ -6,6 +6,7 @@ import { User } from '../entity/User';
 import { Survey } from '../entity/Survey';
 import { Media } from '../entity/Media';
 import { Post } from '../entity/Post';
+import { Like } from '../entity/Like';
 import send from 'koa-send';
 import short from 'short-uuid';
 import dotenv from 'dotenv';
@@ -329,54 +330,51 @@ export const updateViews = (async (ctx) => {
 
 export const postLike = (async (ctx) => {
   const firebaseToken = await verify(ctx.header.firebasetoken);
-  const postId = ctx.header.postId;
-  let body : object, status : number, post : any;
+  const { postId } = ctx.request.body;
+  let body : object, status : number;
 
   if (firebaseToken !== 'error') {
-  }else{
-    status = 412;
-    body = await errorCode(302);
-  }
-
-  ctx.status = status;
-  ctx.body = body;
-});
-/*
-export const getLike = (async (ctx) => {
-  const firebaseToken = await verify(ctx.header.firebasetoken);
-  const userUid = ctx.header.user != undefined ? ctx.header.user : undefined;
-  let body : object, status : number, post : any;
-
-  if (firebaseToken !== 'error') {
-    const user = await getConnection()
+    const post = await getConnection()
     .createQueryBuilder()
-    .select("user")
-    .from(User, "user")
-    .where("user.uid = :uid", { uid: firebaseToken[0] })
-    .getOne();
+    .select("post")
+    .from(Post, "post")
+    .where("post.UUID = :UUID", { UUID: postId })
+    .getOne()
 
-    if (user !== undefined) {
-      if (userUid !== undefined) {
-        post = await getConnection()
+    if(post !== undefined){
+      const like = await getConnection()
+      .createQueryBuilder()
+      .select("like")
+      .from(Like, "like")
+      .where("like.PostUid = :PostUid", { PostUid: postId })
+      .andWhere("like.userUid = userUid", { userUid: firebaseToken[0] })
+      .getOne()
+
+      if(like === undefined){
+        await getConnection()
         .createQueryBuilder()
-        .select(["post.userUid", "post.like", "post.view", "post.description", "post.mediaName", "post.date"])
-        .from(Post, "post")
-        .where("post.userUid = :uid", { uid: userUid })
-        .getMany();
+        .insert()
+        .into(Like)
+        .values({ userUid: firebaseToken[0], PostUid: postId })
+        .execute();
+
+        status = 201;
+        body = {};
       }else{
-        post = await getConnection()
+        await getConnection()
         .createQueryBuilder()
-        .select(["post.userUid", "post.like", "post.view", "post.description", "post.mediaName", "post.date"])
-        .from(Post, "post")
-        .orderBy("RAND()")
-        .getOne();
+        .delete()
+        .from(Like)
+        .where("like.PostUid = :PostUid", { PostUid: postId })
+        .andWhere("like.userUid = userUid", { userUid: firebaseToken[0] })
+        .execute();
+
+        status = 200;
+        body = {};
       }
-      
-      status = 200;
-      body = post;
     }else{
       status = 403;
-      body = await errorCode(303);
+      body = errorCode(601);
     }
   }else{
     status = 412;
@@ -386,4 +384,3 @@ export const getLike = (async (ctx) => {
   ctx.status = status;
   ctx.body = body;
 });
-*/
