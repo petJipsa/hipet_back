@@ -374,7 +374,7 @@ export const postLike = (async (ctx) => {
         .createQueryBuilder()
         .insert()
         .into(Like)
-        .values({ userUid: firebaseToken[0], PostUid: postId })
+        .values({ userUid: firebaseToken[0], Postuid: postId })
         .execute();
 
         status = 201;
