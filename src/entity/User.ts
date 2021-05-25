@@ -23,4 +23,5 @@ export class User {
 
   @Column()
   provider: string;
+
 }

@@ -1,5 +1,10 @@
+<<<<<<< refs/remotes/origin/master
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import {Like} from './Like'
+=======
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
+import {Like} from './Like';
+>>>>>>> update - sorry
 
 @Entity()
 export class Post {
@@ -25,5 +30,9 @@ export class Post {
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   date: string;
 
+<<<<<<< refs/remotes/origin/master
   @OneToMany(() => Like, like => like.post) likes: Like[];
+=======
+  @OneToMany(() => Like, like => like.post) likes: Like[]; 
+>>>>>>> update - sorry
 }

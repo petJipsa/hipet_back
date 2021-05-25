@@ -10,7 +10,10 @@ export const verify = (async (token) => {
   .auth()
   .verifyIdToken(token)
   .then((decodedToken) => { content = [decodedToken.uid, decodedToken.firebase.sign_in_provider]; })
-  .catch((error) => { content = 'error'; });
+  .catch((error) => { 
+    console.log(error);
+    
+    content = 'error'; });
 
   return content;
 });
