@@ -72,7 +72,7 @@ export const loadMyProfile = (async (ctx) => {
 
     if (user !== undefined) {
       status = 200;
-      body = {"name" : user.name, "uid" : user.uid, "profileImg" : user.profile};
+      body = {"name" : user.name, "uid" : user.uid, "profileImg" : user.profile, "follower" : user.follower, "following" : user.following};
     }else{
       status = 403;
       body = await errorCode(108);
