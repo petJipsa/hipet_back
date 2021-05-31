@@ -1,5 +1,4 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import {Like} from './Like'
 
 @Entity()
 export class Post {

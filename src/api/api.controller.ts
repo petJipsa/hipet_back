@@ -60,7 +60,6 @@ export const signUp = (async (ctx) => {
 
 export const loadMyProfile = (async (ctx) => { 
   const firebaseToken = await verify(ctx.header.firebasetoken);
-  const test = ctx.header.uuid;
   let body : object, status : number;
   
   if (firebaseToken !== 'error') {
@@ -70,25 +69,6 @@ export const loadMyProfile = (async (ctx) => {
     .from(User, "user")
     .where("user.uid = :uid", { uid: firebaseToken[0] })
     .getOne();
-console.log(test);
-/*
-          await getConnection()
-        .createQueryBuilder()
-        .insert()
-        .into(Like)
-        .values({ 
-        userUid: firebaseToken[0],
-        Postuid: test})
-        .execute();*/
-    const student = await getConnection()
-    .getRepository(Like)
-    .createQueryBuilder("like")
-    .leftJoinAndSelect("like.post", "post")
-    .where("like.Postuid = :postuid", { postuid: test })
-    .andWhere("like.userUid = :userUid", { userUid: firebaseToken[0] })
-    .getOne();
-
-    console.log(student);
 
     if (user !== undefined) {
       status = 200;
