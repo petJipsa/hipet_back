@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
 const fileFilter = async (req, file, cb) => {
   let typeArray = file.mimetype.split('/');
   let fileType = typeArray[1];
-  if (fileType == 'jpg' || fileType == 'png' || fileType == 'jpeg' || fileType == 'gif' || fileType == 'mp4' || fileType == 'avi' || fileType == 'wmv') {
+  if (fileType == 'mkv' || fileType == 'avi' || fileType == 'mp4' || fileType == 'mpg' || fileType == 'flv' || fileType == 'wmv' || fileType == 'asf' || fileType == 'asx' || fileType == 'ogm' || fileType == 'ogv' || fileType == 'mov') {
     cb(null, true);
   }else{
     cb(null, false)
