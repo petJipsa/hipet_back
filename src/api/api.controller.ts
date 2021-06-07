@@ -213,11 +213,13 @@ export const loadImage = (async (ctx) => {
   .select("media")
   .from(Media, "media")
   .where("media.uid = :uid", { uid: media })
-  .orWhere("media.path = :path", { path: media })
+  .orWhere("media.path = :path", { path: encodeURIComponent(media) })
   .getOne();
 
-  try { await send(ctx, path.path, { root: './files/' }); }
+  try { await send(ctx, encodeURIComponent(path.path), { root: './files/' }); }
   catch(err){
+    console.log(err);
+    
     ctx.status = 404;
     ctx.body = await errorCode(501);
   }
