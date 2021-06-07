@@ -115,7 +115,7 @@ export const loadProfile = (async (ctx) => {
 
 export const changeProfile = (async (ctx) => {
   const firebaseToken = await verify(ctx.header.firebasetoken);
-  const profileImage = ctx.request.body.profileImg != undefined ? ctx.request.body.profileImg : undefined;
+  const profileImage = ctx.request.body.profileImage != undefined ? ctx.request.body.profileImage : undefined;
   const name = ctx.request.body.name != undefined ? ctx.request.body.name : undefined;
   let body : object, status : number, option : object;
 
