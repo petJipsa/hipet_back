@@ -5,6 +5,7 @@ admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 
 export const verify = (async (token) => {
   let content;
+console.log(token);
 
   await admin
   .auth()
@@ -12,7 +13,6 @@ export const verify = (async (token) => {
   .then((decodedToken) => { content = [decodedToken.uid, decodedToken.firebase.sign_in_provider]; })
   .catch((error) => { 
     console.log(error);
-    
     content = 'error'; });
 
   return content;
