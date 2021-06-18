@@ -61,7 +61,8 @@ export const signUp = (async (ctx) => {
 export const loadMyProfile = (async (ctx) => {
   console.log(ctx.header.firebasetoken);
    
-  const firebaseToken = await verify(ctx.header.firebasetoken);
+  let firebaseToken;
+  firebaseToken = await verify(ctx.header.firebasetoken);
   let body : object, status : number;
   
   if (firebaseToken !== 'error') {
