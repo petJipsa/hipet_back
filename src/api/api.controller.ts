@@ -232,19 +232,14 @@ export const writePost = (async (ctx) => {
   const firebaseToken = await verify(ctx.header.firebasetoken);
   const { description, mediaName } = ctx.request.body;
   let body : object, status : number;
-  let array= "";
 
   if(firebaseToken !== 'error'){
-
-    for await ( let tmp of mediaName ){
-      array += tmp + ",";
-    }
 
     await getConnection()
     .createQueryBuilder()
     .insert()
     .into(Post)
-    .values({ userUid: firebaseToken[0], description: description, mediaName: array })
+    .values({ userUid: firebaseToken[0], description: description, mediaName: mediaName })
     .execute();
 
     status = 201;
